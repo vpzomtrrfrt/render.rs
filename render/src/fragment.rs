@@ -17,13 +17,13 @@ use std::fmt::{Result, Write};
 /// };
 /// assert_eq!(result, "<a/><b/>");
 /// ```
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Fragment<T: Render> {
     pub children: T,
 }
 
 impl<T: Render> Render for Fragment<T> {
-    fn render_into<W: Write>(self, writer: &mut W) -> Result {
+    fn render_into<W: Write + ?Sized>(self, writer: &mut W) -> Result {
         self.children.render_into(writer)
     }
 }

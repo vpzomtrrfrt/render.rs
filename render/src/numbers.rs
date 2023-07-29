@@ -6,7 +6,7 @@ use std::fmt::{Result, Write};
 macro_rules! simple_render_impl {
     ($t:ty) => {
         impl Render for $t {
-            fn render_into<W: Write>(self, writer: &mut W) -> Result {
+            fn render_into<W: Write + ?Sized>(self, writer: &mut W) -> Result {
                 write!(writer, "{}", self)
             }
         }

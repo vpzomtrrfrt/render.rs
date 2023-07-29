@@ -3,25 +3,25 @@ use crate::Render;
 use std::fmt::{Result, Write};
 
 impl Render for String {
-    fn render_into<W: Write>(self, writer: &mut W) -> Result {
+    fn render_into<W: Write + ?Sized>(self, writer: &mut W) -> Result {
         escape_html(&self, writer)
     }
 }
 
 impl Render for &str {
-    fn render_into<W: Write>(self, writer: &mut W) -> Result {
+    fn render_into<W: Write + ?Sized>(self, writer: &mut W) -> Result {
         escape_html(self, writer)
     }
 }
 
 impl Render for std::borrow::Cow<'_, str> {
-    fn render_into<W: Write>(self, writer: &mut W) -> Result {
+    fn render_into<W: Write + ?Sized>(self, writer: &mut W) -> Result {
         escape_html(&self, writer)
     }
 }
 
 /// A raw (unencoded) html string
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Raw<'s>(&'s str);
 
 impl<'s> From<&'s str> for Raw<'s> {
@@ -32,7 +32,7 @@ impl<'s> From<&'s str> for Raw<'s> {
 
 /// A raw (unencoded) html string
 impl<'s> Render for Raw<'s> {
-    fn render_into<W: Write>(self, writer: &mut W) -> Result {
+    fn render_into<W: Write + ?Sized>(self, writer: &mut W) -> Result {
         write!(writer, "{}", self.0)
     }
 }

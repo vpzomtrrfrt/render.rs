@@ -20,11 +20,11 @@ use std::fmt::{Result, Write};
 /// };
 /// # assert_eq!(result, "<!DOCTYPE html><html><body/></html>");
 /// ```
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct HTML5Doctype;
 
 impl Render for HTML5Doctype {
-    fn render_into<W: Write>(self, writer: &mut W) -> Result {
+    fn render_into<W: Write + ?Sized>(self, writer: &mut W) -> Result {
         write!(writer, "<!DOCTYPE html>")
     }
 }

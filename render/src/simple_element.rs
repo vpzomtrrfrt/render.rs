@@ -7,7 +7,7 @@ use std::fmt::{Result, Write};
 type Attributes<'a> = Option<HashMap<&'a str, Cow<'a, str>>>;
 
 /// Simple HTML element tag
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SimpleElement<'a, T: Render> {
     /// the HTML tag name, like `html`, `head`, `body`, `link`...
     pub tag_name: &'a str,
@@ -15,7 +15,10 @@ pub struct SimpleElement<'a, T: Render> {
     pub contents: Option<T>,
 }
 
-fn write_attributes<'a, W: Write>(maybe_attributes: Attributes<'a>, writer: &mut W) -> Result {
+fn write_attributes<'a, W: Write + ?Sized>(
+    maybe_attributes: Attributes<'a>,
+    writer: &mut W,
+) -> Result {
     match maybe_attributes {
         None => Ok(()),
         Some(mut attributes) => {
@@ -30,7 +33,7 @@ fn write_attributes<'a, W: Write>(maybe_attributes: Attributes<'a>, writer: &mut
 }
 
 impl<T: Render> Render for SimpleElement<'_, T> {
-    fn render_into<W: Write>(self, writer: &mut W) -> Result {
+    fn render_into<W: Write + ?Sized>(self, writer: &mut W) -> Result {
         match self.contents {
             None => {
                 write!(writer, "<{}", self.tag_name)?;
